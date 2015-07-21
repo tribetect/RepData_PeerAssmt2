@@ -1,16 +1,18 @@
 ---
-title: "Impact of Severe Weather Events: Fatalities, Injuries, and Economic Consequences"
+title: "read code"
+author: '@tribetect'
+date: "July 21, 2015"
 output: html_document
 ---
 
-###Synopsis 
-that describes and summarizes the data analysis
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-### Data Processing
-that describes how the data were loaded into R and processed for analysis. In particular, your analysis must start from the raw CSV file containing the data. You cannot do any preprocessing outside the document. If preprocessing is time-consuming you may consider using the cache = TRUE option for certain code chunks.
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
 ```{r processing_code}
 
-runObs = 400000 #limit reading datafile
+runObs = 400 #limit reading datafile
 
 storms <- read.csv("repdata-data-StormData.csv.bz2")#, nrows = runObs)
 storms2 <- storms[c("REFNUM", "EVTYPE", "INJURIES", "FATALITIES", "PROPDMG", "CROPDMG")]
@@ -74,29 +76,8 @@ for(i in 1:nrow(storms3)) {
 
 
 table(storms3$EVGROUP)
-saveRDS(storms3, "storms3_400K.RDS")
+saveRDS(storms3, "storms3_processed.RDS")
 require(ggplot2)
 
-```
-
-### Q1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
-```{r Human_Cost}
-humancost <- tapply(storms3$HUMANCOST, storms3$EVGROUP, "sum")
-humancost
-qplot(names(humancost), humancost, size = humancost, main = "Human Cost of Weather Events", xlab = "Event Type Group", ylab = "Human Cost: Death and Injury")
 
 ```
-
-### Q2 Across the United States, which types of events have the greatest economic consequences?
-```{r Economic_Cost}
-
-econcost <- tapply(storms3$ECONCOST, storms3$EVGROUP, "sum")
-econcost
-qplot(names(econcost), humancost, size = econcost, main = "Economic Cost of Weather Events", xlab = "Event Type Group", ylab = "Economic Costs: Crop and Property Damage")
-
-```
-
-
-### TO DO: Section called "Results" where the main results are presented?
-
-### TO DO: Ensure atMOST 3 figures: Figures may have multiple plots in them (i.e. panel plots), but there cannot be more than three figures total.
