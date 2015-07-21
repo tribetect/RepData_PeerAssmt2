@@ -1,10 +1,62 @@
 ---
-title: "Reproducible Research: Assignment 2"
+title: "Impact of Severe Weather Events: Fatalities, Injuries, and Economic Consequences"
 output: html_document
 ---
 
-## Q1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+###Synopsis 
+that describes and summarizes the data analysis
+
+### Data Processing
+that describes how the data were loaded into R and processed for analysis. In particular, your analysis must start from the raw CSV file containing the data. You cannot do any preprocessing outside the document. If preprocessing is time-consuming you may consider using the cache = TRUE option for certain code chunks.
+```{r processing_code}
+storms <- read.csv("repdata-data-StormData.csv.bz2", nrows = 100000)
+storms2 <- storms[c("REFNUM", "EVTYPE")]
+
+#classify EVTYPE into smaller EVGROUPS
+library(dplyr)
+storms3 <- mutate(storms2, EVGROUP = "Unclassified")
+for(i in 1:nrow(storms3)) {
+  
+        EVENT_i <- tolower(storms3[i,2])
+
+        #classify as MARINE
+        if(grepl("hurricane", EVENT_i) | grepl("current", EVENT_i) | grepl("tide", EVENT_i) 
+           | grepl("sea", EVENT_i) | grepl("marine", EVENT_i) |grepl("surf", EVENT_i) 
+           | grepl("coast", EVENT_i) 
+         ){
+                storms3[i,3] = "MARINE" #set the EVGROUP column
+           }
+        
+        #classify as WIND, if applicable
+        if(grepl("nado", EVENT_i) | grepl("wind", EVENT_i) | grepl("turbulance", EVENT_i) 
+           | grepl("funnel", EVENT_i) | grepl("storm", EVENT_i) |grepl("burst", EVENT_i) 
+           | grepl("dust", EVENT_i) | grepl("spout", EVENT_i) |grepl("cloud", EVENT_i) 
+         ){
+                storms3[i,3] = "WIND" #set the EVGROUP column
+           }
+        
+
+        
+        } #end of FOR loop
+
+table(storms3$EVGROUP)
+
+```
+
+### Q1. Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+```{r population_impact_analysis}
+require(ggplot2)
+g <- ggplot(data = storms)
+g + geom_point(mapping = aes(x = REFNUM, y = (INJURIES + FATALITIES))) + xlab("Event Reference Number") + ylab("Fatalities and Injuries")
+
+```
+
+### Q2 Across the United States, which types of events have the greatest economic consequences?
+```{r economic_impact_analysis}
+
+```
 
 
+### TO DO: Section called "Results" where the main results are presented?
 
-## Q2 Across the United States, which types of events have the greatest economic consequences?
+### TO DO: Ensure atMOST 3 figures: Figures may have multiple plots in them (i.e. panel plots), but there cannot be more than three figures total.
