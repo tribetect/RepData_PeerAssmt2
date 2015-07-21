@@ -9,75 +9,13 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r}
-```{r processing_code}
-
-runObs = 400 #limit reading datafile
-
-storms <- read.csv("repdata-data-StormData.csv.bz2")#, nrows = runObs)
-storms2 <- storms[c("REFNUM", "EVTYPE", "INJURIES", "FATALITIES", "PROPDMG", "CROPDMG")]
-
-#classify EVTYPE into smaller EVGROUPS
-library(dplyr)
-storms3 <- mutate(storms2, HUMANCOST = INJURIES + FATALITIES, ECONCOST = PROPDMG + CROPDMG, EVGROUP = "Unclassified")
-
-storms3 <- storms3[c("REFNUM", "EVTYPE", "EVGROUP", "HUMANCOST", "ECONCOST")] #FOR PART I
-EVGROUP_col = 3
-HUMANCOST_col = 4
-ECONCOST_col = 5
-
-for(i in 1:nrow(storms3)) {
-  
-        EVENT_i <- tolower(storms3[i,"EVTYPE"])
-
-        #classify as MARINE
-        if(grepl("hurricane", EVENT_i) | grepl("current", EVENT_i) | grepl("tide", EVENT_i) 
-           | grepl("sea", EVENT_i) | grepl("marine", EVENT_i) |grepl("surf", EVENT_i) 
-           | grepl("coast", EVENT_i) 
-         ){
-                storms3[i,EVGROUP_col] = "MARINE" #set the EVGROUP column
-           }
-        
-        #classify events as TERRESTRIAL 
-        if(grepl("avalanche", EVENT_i) | grepl("fire", EVENT_i) | grepl("mud", EVENT_i) 
-           | grepl("pack", EVENT_i) | grepl("flood", EVENT_i)
-         ){
-                storms3[i,EVGROUP_col] = "TERRESTRIAL" #set the EVGROUP column
-           }
-        
-        #classify as WIND, if applicable
-        if(grepl("nado", EVENT_i) | grepl("wind", EVENT_i) | grepl("turbulance", EVENT_i) 
-           | grepl("funnel", EVENT_i) | grepl("storm", EVENT_i) |grepl("burst", EVENT_i) 
-           | grepl("dust", EVENT_i) | grepl("spout", EVENT_i) |grepl("cloud", EVENT_i) 
-         ){
-                storms3[i,EVGROUP_col] = "WIND" #set the EVGROUP column
-           }
-        
-
-        #classify as PRECIPITATION, if applicable
-        if(grepl("hail", EVENT_i) | grepl("rain", EVENT_i) | grepl("snow", EVENT_i) 
-           | grepl("freez", EVENT_i) | grepl("flood", EVENT_i) |grepl("thunder", EVENT_i) 
-           | grepl("preci", EVENT_i) | grepl("wet", EVENT_i) |grepl("lightening", EVENT_i) 
-           | grepl("blizzard", EVENT_i) | grepl("sleet", EVENT_i) |grepl("urban", EVENT_i) 
-         ){
-                storms3[i,EVGROUP_col] = "PRECIPITATION" #set the EVGROUP column
-           }
-        
-        #classify as TEMPERATURE, if applicable
-        if(grepl("cold", EVENT_i) | grepl("hot", EVENT_i) | grepl("cool", EVENT_i) 
-           | grepl("warm", EVENT_i) | grepl("heat", EVENT_i) | grepl("frost", EVENT_i) 
-           | grepl("chill", EVENT_i) | grepl("winter", EVENT_i) | grepl("ice", EVENT_i) 
-                | grepl("glaze", EVENT_i)){
-                storms3[i,EVGROUP_col] = "TEMPERATURE" #set the EVGROUP column
-           }
-        
-        
-        } #end of FOR loop
-
-
-table(storms3$EVGROUP)
-saveRDS(storms3, "storms3_processed.RDS")
-require(ggplot2)
-
-
+```{r reading_code}
+#storms <- read.csv("repdata-data-StormData.csv.bz2")#, nrows = runObs)
+#storms2 <- storms[c("REFNUM", "EVTYPE", "INJURIES", "FATALITIES", "PROPDMG", "CROPDMG")]
+#saveRDS(storms2, "storms2.RDS")
 ```
+```{r}
+storms2 <- readRDS("storms2.RDS")
+str(storms2)
+```
+
