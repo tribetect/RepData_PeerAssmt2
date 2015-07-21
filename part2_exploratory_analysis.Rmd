@@ -8,25 +8,27 @@ output: html_document
 ```{r temp, eval=TRUE}
 storms4 <- readRDS("partial_output/storms4_clean.RDS") 
 require(ggplot2)
-        
+require(reshape2)        
 ```
 
 
 ```{r Human_Cost}
-humancost <- tapply(storms4$HUMANCOST, INDEX = storms4$EVGROUP, FUN = "sum")
+humancost <- melt(tapply(storms4$HUMANCOST, INDEX = storms4$EVGROUP, FUN = "sum"))
 
-plot(humancost)
+gghuman <- ggplot(data = humancost, mapping = aes(x = Var1, y = value))
 
-qplot(names(humancost), humancost, size = humancost, main = "Human Cost of Weather Events", xlab = "Event Type Group", ylab = "Human Cost: Death and Injury")
-
+gghuman + geom_bar(stat = "identity")+ ylab("Human Cost - Death and Injury") + xlab ("Event Type Group") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+        
 ```
 
 ```{r Economic_Cost}
 
-econdmg <- tapply(storms4$ECONDMG, INDEX = storms4$EVGROUP, FUN = "sum")
-plot(econdmg)
+econdmg <- melt(tapply(storms4$ECONDMG, INDEX = storms4$EVGROUP, FUN = "sum"))
 
-qplot(names(econdmg), econdmg, size = econdmg, main = "Economic Cost of Weather Events", xlab = "Event Type Group", ylab = "Economic Costs: Crop and Property Damage")
+ggecon <- ggplot(data = econdmg, mapping = aes(x = Var1, y = value))
+
+ggecon + geom_bar(stat = "identity")+ ylab("Crop and Property Damage") + xlab ("Event Type Group") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
 
 ```
 

@@ -5,5 +5,5 @@ date: "July 21, 2015"
 output: html_document
 ---
 
-#results
-## to be discussed here
+#Results
+Extreme events involving wind have maximum humans and economic costs. Further, when considering economic damange, events involving terrestrial phenomena (mud slides, etc.) or precipitation (snow, rain, hail, etc.) also feature high. 
