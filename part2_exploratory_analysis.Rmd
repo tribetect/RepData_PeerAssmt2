@@ -1,0 +1,32 @@
+---
+title: "question1"
+author: '@tribetect'
+date: "July 21, 2015"
+output: html_document
+---
+
+```{r temp, eval=TRUE}
+storms4 <- readRDS("partial_output/storms4_clean.RDS") 
+require(ggplot2)
+        
+```
+
+
+```{r Human_Cost}
+humancost <- tapply(storms4$HUMANCOST, INDEX = storms4$EVGROUP, FUN = "sum")
+
+plot(humancost)
+
+qplot(names(humancost), humancost, size = humancost, main = "Human Cost of Weather Events", xlab = "Event Type Group", ylab = "Human Cost: Death and Injury")
+
+```
+
+```{r Economic_Cost}
+
+econdmg <- tapply(storms4$ECONDMG, INDEX = storms4$EVGROUP, FUN = "sum")
+plot(econdmg)
+
+qplot(names(econdmg), econdmg, size = econdmg, main = "Economic Cost of Weather Events", xlab = "Event Type Group", ylab = "Economic Costs: Crop and Property Damage")
+
+```
+

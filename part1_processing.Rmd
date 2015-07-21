@@ -1,0 +1,109 @@
+---
+title: "read code"
+author: '@tribetect'
+date: "July 21, 2015"
+output: html_document
+---
+
+
+```{r dependencies}
+library(dplyr)
+```
+
+
+```{r reading_code, eval=FALSE}
+storms <- read.csv("repdata-data-StormData.csv.bz2")#, nrows = runObs)
+storms2 <- storms[c("REFNUM", "EVTYPE", "INJURIES", "FATALITIES", "PROPDMG", "CROPDMG")]
+saveRDS(storms2, "storms2.RDS")
+```
+
+
+```{r processing_1_mutate_drop, eval=FALSE}
+storms3 <- mutate(storms2, ECONDMG = PROPDMG+CROPDMG, HUMANCOST = INJURIES+FATALITIES)
+storms3 <- storms3[c("REFNUM", "EVTYPE", "HUMANCOST", "ECONDMG")]
+storms3 <- mutate(storms3, EVGROUP = "UNCLASSIFIED")
+saveRDS(storms3, "storms3.RDS")
+```
+
+```{r read_in_rds_temp, eval=FALSE}
+storms3 <- readRDS("storms3.RDS")
+str(storms3)
+```
+
+
+```{r process_2_EVTYPE_2_EVGROUP, eval=FALSE}
+
+storms3 <- storms3[800001:902297,]
+
+EVTYPE_col = 2
+EVGROUP_col = 5
+
+for(i in 1:nrow(storms3)) {
+
+        EVENT_i <- tolower(storms3[i,"EVTYPE"])
+
+        #classify as WIND, if applicable
+        if(grepl("nado", EVENT_i) | grepl("wind", EVENT_i) | grepl("turbulance", EVENT_i) 
+           | grepl("funnel", EVENT_i) | grepl("storm", EVENT_i) |grepl("burst", EVENT_i) 
+           | grepl("dust", EVENT_i) | grepl("spout", EVENT_i) |grepl("cloud", EVENT_i) 
+         ){
+                storms3[i,EVGROUP_col] = "WIND" #set the EVGROUP column
+           }
+        
+
+        #classify as PRECIPITATION, if applicable
+        if(grepl("hail", EVENT_i) | grepl("rain", EVENT_i) | grepl("snow", EVENT_i) 
+           | grepl("freez", EVENT_i) | grepl("flood", EVENT_i) |grepl("thunder", EVENT_i) 
+           | grepl("preci", EVENT_i) | grepl("wet", EVENT_i) |grepl("lightening", EVENT_i) 
+           | grepl("blizzard", EVENT_i) | grepl("sleet", EVENT_i) |grepl("urban", EVENT_i) 
+         ){
+                storms3[i,EVGROUP_col] = "PRECIPITATION" #set the EVGROUP column
+           }
+        
+        #classify as MARINE
+        if(grepl("hurricane", EVENT_i) | grepl("current", EVENT_i) | grepl("tide", EVENT_i) 
+           | grepl("sea", EVENT_i) | grepl("marine", EVENT_i) |grepl("surf", EVENT_i) 
+           | grepl("coast", EVENT_i) 
+         ){
+                storms3[i,EVGROUP_col] = "MARINE" #set the EVGROUP column
+           }
+        
+        #classify events as TERRESTRIAL 
+        if(grepl("avalanche", EVENT_i) | grepl("fire", EVENT_i) | grepl("mud", EVENT_i) 
+           | grepl("pack", EVENT_i) | grepl("flood", EVENT_i)
+         ){
+                storms3[i,EVGROUP_col] = "TERRESTRIAL" #set the EVGROUP column
+           }
+        
+        #classify as TEMPERATURE, if applicable
+        if(grepl("cold", EVENT_i) | grepl("hot", EVENT_i) | grepl("cool", EVENT_i) 
+           | grepl("warm", EVENT_i) | grepl("heat", EVENT_i) | grepl("frost", EVENT_i) 
+           | grepl("chill", EVENT_i) | grepl("winter", EVENT_i) | grepl("ice", EVENT_i) 
+                | grepl("glaze", EVENT_i)){
+                storms3[i,EVGROUP_col] = "TEMPERATURE" #set the EVGROUP column
+           }
+        } #end of FOR loop
+```
+
+```{r save_display_data, eval=FALSE}
+table(storms3$EVGROUP)
+
+saveRDS(storms3, "storms3_800k_902297.RDS")
+
+```
+
+```{r combine_processed_data, eval=FALSE}
+
+storms4 <- rbind(readRDS("partial_output/storms3_000k_100k.RDS"),
+                readRDS("partial_output/storms3_100k_200k.RDS"),
+                readRDS("partial_output/storms3_200k_300k.RDS"),
+                readRDS("partial_output/storms3_300k_500k.RDS"),
+                readRDS("partial_output/storms3_500k_800k.RDS"),
+                readRDS("partial_output/storms3_800k_902297.RDS")
+                )
+
+table(storms4$EVGROUP)
+
+saveRDS(storms4, "partial_output/storms4_clean.RDS")
+
+```
