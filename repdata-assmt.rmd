@@ -9,7 +9,7 @@ that describes and summarizes the data analysis
 ### Data Processing
 that describes how the data were loaded into R and processed for analysis. In particular, your analysis must start from the raw CSV file containing the data. You cannot do any preprocessing outside the document. If preprocessing is time-consuming you may consider using the cache = TRUE option for certain code chunks.
 ```{r processing_code}
-storms <- read.csv("repdata-data-StormData.csv.bz2", nrows = 100000)
+storms <- read.csv("repdata-data-StormData.csv.bz2", nrows = 50000)
 storms2 <- storms[c("REFNUM", "EVTYPE")]
 
 #classify EVTYPE into smaller EVGROUPS
@@ -27,6 +27,13 @@ for(i in 1:nrow(storms3)) {
                 storms3[i,3] = "MARINE" #set the EVGROUP column
            }
         
+        #classify events as TERRESTRIAL 
+        if(grepl("avalanche", EVENT_i) | grepl("fire", EVENT_i) | grepl("mud", EVENT_i) 
+           | grepl("pack", EVENT_i) | grepl("flood", EVENT_i)
+         ){
+                storms3[i,3] = "TERRESTRIAL" #set the EVGROUP column
+           }
+        
         #classify as WIND, if applicable
         if(grepl("nado", EVENT_i) | grepl("wind", EVENT_i) | grepl("turbulance", EVENT_i) 
            | grepl("funnel", EVENT_i) | grepl("storm", EVENT_i) |grepl("burst", EVENT_i) 
@@ -36,6 +43,23 @@ for(i in 1:nrow(storms3)) {
            }
         
 
+        #classify as PRECIPITATION, if applicable
+        if(grepl("hail", EVENT_i) | grepl("rain", EVENT_i) | grepl("snow", EVENT_i) 
+           | grepl("freez", EVENT_i) | grepl("flood", EVENT_i) |grepl("thunder", EVENT_i) 
+           | grepl("preci", EVENT_i) | grepl("wet", EVENT_i) |grepl("lightening", EVENT_i) 
+           | grepl("blizzard", EVENT_i) | grepl("sleet", EVENT_i) |grepl("urban", EVENT_i) 
+         ){
+                storms3[i,3] = "PRECIPITATION" #set the EVGROUP column
+           }
+        
+        #classify as TEMPERATURE, if applicable
+        if(grepl("cold", EVENT_i) | grepl("hot", EVENT_i) | grepl("cool", EVENT_i) 
+           | grepl("warm", EVENT_i) | grepl("heat", EVENT_i) | grepl("frost", EVENT_i) 
+           | grepl("chill", EVENT_i) | grepl("winter", EVENT_i) | grepl("ice", EVENT_i) 
+                | grepl("glaze", EVENT_i)){
+                storms3[i,3] = "TEMPERATURE" #set the EVGROUP column
+           }
+        
         
         } #end of FOR loop
 
