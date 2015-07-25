@@ -1,6 +1,6 @@
 ---
-title: "Impact of Severe Weather Events: Fatalities, Injuries, and Economic Consequences"
-output: html_document
+title: 'Impact of Severe Weather Events: Fatalities, Injuries, and Economic Consequences'
+output: word_document
 ---
 
 ###Synopsis 
@@ -8,7 +8,7 @@ that describes and summarizes the data analysis
 
 ### Data Processing
 that describes how the data were loaded into R and processed for analysis. In particular, your analysis must start from the raw CSV file containing the data. You cannot do any preprocessing outside the document. If preprocessing is time-consuming you may consider using the cache = TRUE option for certain code chunks.
-```{r processing_code}
+```{r processing_code, eval=FALSE}
 
 runObs = 400000 #limit reading datafile
 
@@ -75,7 +75,6 @@ for(i in 1:nrow(storms3)) {
 
 table(storms3$EVGROUP)
 saveRDS(storms3, "storms3_400K.RDS")
-require(ggplot2)
 
 ```
 
@@ -95,8 +94,3 @@ econcost
 qplot(names(econcost), humancost, size = econcost, main = "Economic Cost of Weather Events", xlab = "Event Type Group", ylab = "Economic Costs: Crop and Property Damage")
 
 ```
-
-
-### TO DO: Section called "Results" where the main results are presented?
-
-### TO DO: Ensure atMOST 3 figures: Figures may have multiple plots in them (i.e. panel plots), but there cannot be more than three figures total.

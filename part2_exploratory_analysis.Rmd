@@ -2,7 +2,7 @@
 title: "question1"
 author: '@tribetect'
 date: "July 21, 2015"
-output: html_document
+output: word_document
 ---
 
 ```{r temp, eval=TRUE}

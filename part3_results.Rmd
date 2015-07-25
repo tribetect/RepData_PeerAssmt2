@@ -2,8 +2,18 @@
 title: "part3_results"
 author: '@tribetect'
 date: "July 21, 2015"
-output: html_document
+output: word_document
 ---
 
+```{r temp_initialize_2_visualize, eval=FALSE}
+storms4 <- readRDS("partial_output/storms4_clean.RDS")
+storms5 <- storms4[c(1,5:3)]
+head(storms5)
+```
+
+
+
 #Results
-Extreme events involving wind have maximum humans and economic costs. Further, when considering economic damange, events involving terrestrial phenomena (mud slides, etc.) or precipitation (snow, rain, hail, etc.) also feature high. 
+Extreme events involving wind have maximum humans and economic costs. Further, when considering economic damage, events involving terrestrial phenomena (mud slides, etc.) or precipitation (snow, rain, hail, etc.) also feature high damage. 
+
+

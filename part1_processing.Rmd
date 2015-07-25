@@ -1,10 +1,37 @@
 ---
-title: "read code"
-author: '@tribetect'
-date: "July 21, 2015"
-output: html_document
+title: 'Impact of Severe Weather Events: Fatalities, Injuries, and Economic Consequences'
+output: word_document
 ---
 
+###Synopsis 
+Human cost and economic impact of severe weather events may be minimized or better managed by understanding which type of weather events need to be studied, prepared, and planned for. Severe events involving winds, precipitation, and ground impact feature highest human and economic costs. Those involving large bodies of waters, such as oceans, or are based on extreme temperatures (hot/cold), have relatively smaller costs. 
+
+### Data Processing
+The data of 900,000+ observations contained in a bz2 zipped csv file was processed as follows:
+
+1. Columns other than event number (REFNUM), event type (EVTYPE), human cost (INJURIES, FATALITIES), and economic cost (PRODMG, CROPDMG), were dropped.
+
+2. A new variable, EVGROUP, was dertived to group 900+ event types into simpler categories:
+
+- WIND (If EVTYPE contained: wind, turbulance, funnel, nado, burst, dust, spout, cloud)
+
+- PRECIPIATION (If EVTYPE contained: hail, rain, snow, freez, flood, preci, wet, lightening, blizzard, sleet, urban)
+
+- MARINE (If EVTYPE contained: hurricane, current, tide, sea, marine, surf, coast)
+
+- TERRESTRIAL (If EVTYPE contained: avalanche, fire, mud, pack)
+
+- TEMPERATURE (If EVTYPE contained: cold, hot, cool, warm, heat, frost, chill, winter, ice, glaze)
+
+3. For each observation, human and economic costs were computed as new columns:
+
+- Human cost = sum of injuries and fatalities (INJURIES, FATALITIES)
+
+- Economic cost = sum of crop damage and property damage (CROPDMG, PROPDMG)
+
+4. Summary statistics: Sum of human and economic costs were computed by event type groups (EVGROUP) using tapply function.
+
+5. Exploratory analysis: Two bar plots of human and economic costs were constructed. 
 
 ```{r dependencies}
 library(dplyr)
@@ -70,8 +97,7 @@ for(i in 1:nrow(storms3)) {
         
         #classify events as TERRESTRIAL 
         if(grepl("avalanche", EVENT_i) | grepl("fire", EVENT_i) | grepl("mud", EVENT_i) 
-           | grepl("pack", EVENT_i) | grepl("flood", EVENT_i)
-         ){
+           | grepl("pack", EVENT_i)){
                 storms3[i,EVGROUP_col] = "TERRESTRIAL" #set the EVGROUP column
            }
         
@@ -87,9 +113,7 @@ for(i in 1:nrow(storms3)) {
 
 ```{r save_display_data, eval=FALSE}
 table(storms3$EVGROUP)
-
 saveRDS(storms3, "storms3_800k_902297.RDS")
-
 ```
 
 ```{r combine_processed_data, eval=FALSE}
